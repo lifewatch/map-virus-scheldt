@@ -1,4 +1,3 @@
-# library(ows4R)
 library(sf)
 library(ggplot2)
 library(dplyr)
@@ -26,8 +25,8 @@ salinity <- read_sf("./data/saliniteit_harbasin.shp") |>
 # Set stations
 stations <- data.frame(
   label = as.character(1:5),
-  longitude = c(3.17344, 3.67789, 4.15867, 4.39829, 4.30448),
-  latitude = c(51.50990, 51.40181, 51.38225, 51.23136, 51.12416)
+  longitude = c(3.17344, 3.67789, 4.15867, 4.39829, 4.19),
+  latitude = c(51.50990, 51.40181, 51.38225, 51.23136, 51.06)
 ) |> st_as_sf(
   coords = c("longitude", "latitude"),
   remove = FALSE,
@@ -37,9 +36,9 @@ stations <- data.frame(
 
 # Set country labels
 country_label <- data.frame(
-  label = c("BEL", "NLD"),
-  latitude = c(51.15, 51.3),
-  longitude = c(3.72, 3.85)
+  label = c("BEL", "NLD", "NS", "SE", "SR"),
+  latitude = c(51.15, 51.3, 51.45, 51.45, 51.15),
+  longitude = c(3.72, 3.85, 3.25, 3.48, 4.2)
 ) |> st_as_sf(
   coords = c("longitude", "latitude"),
   remove = FALSE,
@@ -48,13 +47,14 @@ country_label <- data.frame(
 
 # Plot
 ggplot() +
-  scale_x_continuous(breaks = seq(3, 5, by = spacing)) +
-  scale_y_continuous(breaks = seq(50, 52, by = spacing)) +
+  scale_x_continuous(breaks = seq(3, 5, by = 0.2)) +
+  scale_y_continuous(breaks = seq(50, 52, by = 0.1)) +
   theme(
+    legend.position = "none",
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
     panel.grid = element_blank(),
-    panel.background = element_rect(fill = "#164863"),
+    panel.background = element_rect(fill = "#48bffb"),
     plot.background = element_rect(),
     plot.margin = margin(0, 0, 0, 0, "cm")
     ) +
@@ -62,23 +62,23 @@ ggplot() +
 # Add Salinity
   geom_sf(mapping = aes(fill = salinity_1), data = salinity, color = NA) +
   scale_fill_manual(values = c(
-                               "#9BBEC8",  
-                               "#DDF2FD",
-                               "#427D9D"), 
+                                "#9addff",
+                                "#c4e8fb",
+                                "#6fcbf9"),
                     name = "Salinity") + 
 # Add land shapes
   geom_sf(mapping = aes(), data = countries, fill = "gray92", color = "gray30") +
   
 # Add stations
-  geom_sf(mapping = aes(), data = stations, fill = "gray30") +
+  geom_sf(mapping = aes(), data = stations, fill = "gray30", color = "gray10") +
 
 # Add country labels
   geom_sf_text(mapping = aes(label = country_label$label, 
                              geometry = country_label$geometry),
-               size = 3, color = "gray30"
+               size = 3, color = "gray10"
   ) +
 # Set frame and CRS
   coord_sf(crs = 3035,
-           xlim = c(3850000, 3936000),
-           ylim = c(3120000, 3180000),
+           xlim = c(3840000, 3940000),
+           ylim = c(3110000, 3190000),
            expand = F)
